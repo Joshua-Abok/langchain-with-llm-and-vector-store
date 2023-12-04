@@ -106,7 +106,7 @@ celerybeat.pid
 
 # Environments
 .env
-.sw_env
+tchat/.env
 env/
 venv/
 ENV/
