@@ -107,6 +107,7 @@ celerybeat.pid
 # Environments
 .env
 tchat/.env
+pycode/.env
 env/
 venv/
 ENV/
