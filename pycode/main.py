@@ -1,6 +1,6 @@
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain, SequentialChain # help series chain together
 from dotenv import load_dotenv
 import argparse
 
@@ -21,16 +21,43 @@ code_prompt = PromptTemplate(
     input_variables=["language", "task"]
 )
 
+                #  chain in series with SequentialChain - 1. [prompt template]
+test_prompt = PromptTemplate(
+    input_variables=['language', 'code'],
+    template='Write a test for the following {language} code: \n {code}'
+)
+
+
 # 2. Specify the [language model] to use 
 
 code_chain = LLMChain(
     llm=llm, 
-    prompt=code_prompt
+    prompt=code_prompt,
+    output_key="code"    # instead of default "text"
 )
 
+                #  chain in series with SequentialChain - 2. [language model]
+test_chain = LLMChain(
+    llm=llm, 
+    prompt=test_prompt, 
+    output_key="test"
+)
+
+                #  chain in series with SequentialChain - 3. wire the chains together - code_chain & test_chain
+chain = SequentialChain(
+    chains=[code_chain, test_chain], 
+    input_variables=["task", "language"], 
+    output_variables=["test", "code"]
+)                
+
 # PromptTemplate requires a 'language' & a 'task'
-result = code_chain({
+result = chain({
     "language": args.language, 
     "task": args.task
 })
-print(result['text'])
+
+print(">>>>>> GENERATED CODE:")
+print(result["code"])
+
+print(">>>>>> GENERATED TEST:")
+print(result["test"])
