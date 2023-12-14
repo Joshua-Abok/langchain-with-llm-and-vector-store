@@ -10,7 +10,7 @@ embeddings = OpenAIEmbeddings()
 
 # emb = embeddings.embed_query("hi there")
 
-# print(len(emb))
+# print(len(emb))  -> outputs the embeds. 
 
 text_splitter = CharacterTextSplitter(
     separator="\n",
