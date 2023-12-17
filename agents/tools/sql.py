@@ -4,9 +4,18 @@ from langchain.tools import Tool
 conn = sqlite3.connect("db.sqlite")
 
 
+def list_tables():
+    c = conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    rows = c.fetchall()
+    return "\n".join(row[0] for row in rows if row[0] is not None)
+
+
 def run_sqlite_query(query):
     '''executed whenever chatGPT decides to execute a SQL query'''
     c = conn.cursor()    # similar to object allowing us access to the database
+
+    # capture error of missing col 
     try: 
         c.execute(query)
         return c.fetchall()  # collecting all the info the query returned
