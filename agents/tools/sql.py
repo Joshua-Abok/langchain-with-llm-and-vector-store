@@ -30,3 +30,19 @@ run_query_tool = Tool.from_function(
     func=run_sqlite_query
 )
 
+
+def describe_tables(table_names): 
+    '''take list_tables and return info about the tables '''
+
+    c = conn.cursor()
+    tables = ', '.join("'" + table + "'" for table in table_names)
+    # use tables inside our query to the db 
+    rows = c.execute(f"SELECT sql FROM sqlite_master WHERE type='table' and name IN ({tables});")
+    return '\n'.join(row[0] for row in rows if row[0] is not None)
+
+# wrap our describe_tables() inside a tool -> & then feed table to the agent :)
+describe_tables_tool = Tool.from_function(
+    name="describe_tables", 
+    description="Given a list of table names, returns the schema of those tables", 
+    func=describe_tables
+)

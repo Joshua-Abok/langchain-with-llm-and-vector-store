@@ -8,7 +8,7 @@ from langchain.schema import SystemMessage    # helps make plain, simple system 
 from langchain.agents import OpenAIFunctionsAgent, AgentExecutor
 from dotenv import load_dotenv
 
-from tools.sql import run_query_tool, list_tables  # importing the list_tables function
+from tools.sql import run_query_tool, list_tables, describe_tables_tool # importing the list_tables function
 
 
 load_dotenv()
@@ -30,7 +30,7 @@ prompt = ChatPromptTemplate(
 
 
 # refactor -> variable for tools 
-tools = [run_query_tool]
+tools = [run_query_tool, describe_tables_tool]
 
 # chain that knows how to use tools 
 # -> take list of tools & convert 'em into JSON function descr. 
