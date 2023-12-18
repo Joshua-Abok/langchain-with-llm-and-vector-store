@@ -9,6 +9,7 @@ from langchain.agents import OpenAIFunctionsAgent, AgentExecutor
 from dotenv import load_dotenv
 
 from tools.sql import run_query_tool, list_tables, describe_tables_tool # importing the list_tables function
+from tools.report import write_report_tool
 
 
 load_dotenv()
@@ -36,7 +37,11 @@ prompt = ChatPromptTemplate(
 
 
 # refactor -> variable for tools 
-tools = [run_query_tool, describe_tables_tool]
+tools = [
+         run_query_tool, 
+         describe_tables_tool, 
+         write_report_tool
+         ]
 
 # chain that knows how to use tools 
 # -> take list of tools & convert 'em into JSON function descr. 
@@ -54,4 +59,6 @@ agent_executor = AgentExecutor(
     tools=tools
 )
 
-agent_executor("How many shipping addresses are in the database?")
+# agent_executor("How many shipping addresses are in the database?")
+agent_executor("Summarize the top 5 most popular products. Write the results to a report file.")
+
